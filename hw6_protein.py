@@ -4,6 +4,7 @@ Name:
 Roll Number:
 """
 
+from opcode import opname
 import hw6_protein_tests as test
 
 project = "Protein" # don't edit this
@@ -17,7 +18,9 @@ Parameters: str
 Returns: str
 '''
 def readFile(filename):
-    return
+    f = open(filename, "r")
+    text = f.read().replace("\n","")
+    return text
 
 
 '''
@@ -27,7 +30,16 @@ Parameters: str ; int
 Returns: list of strs
 '''
 def dnaToRna(dna, startIndex):
-    return
+    codon=""
+    condons=[]
+    for each in dna[startIndex:].replace("T","U"):
+        codon += each
+        if(len(codon) == 3):
+            condons.append(codon)
+            if(codon in ["UAA", "UAG", "UGA"]):
+                return condons
+            codon=""
+    return condons
 
 
 '''
@@ -187,9 +199,11 @@ def runFullProgram():
 # This code runs the test cases to check your work
 if __name__ == "__main__":
     print("\n" + "#"*15 + " WEEK 1 TESTS " +  "#" * 16 + "\n")
-    test.week1Tests()
+    test.testReadFile()
+    test.testDnaToRna()
+    # test.week1Tests()
     print("\n" + "#"*15 + " WEEK 1 OUTPUT " + "#" * 15 + "\n")
-    runWeek1()
+    # runWeek1()
 
     ## Uncomment these for Week 2 ##
     """
