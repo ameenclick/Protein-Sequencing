@@ -5,6 +5,8 @@ Roll Number:
 """
 
 from opcode import opname
+
+from numpy import amin
 import hw6_protein_tests as test
 
 project = "Protein" # don't edit this
@@ -67,7 +69,16 @@ Parameters: list of strs ; dict mapping strs to strs
 Returns: list of strs
 '''
 def generateProtein(codons, codonD):
-    return
+    proteins=[]
+    for codon in codons:
+            if(proteins == []):
+                proteins.append("Start")
+            else:
+                if(codon in ["UAA", "UAG", "UGA"]):
+                    proteins.append("Stop")
+                    return proteins
+                proteins.append(codonD[codon])
+    return proteins
 
 
 '''
@@ -206,10 +217,7 @@ def runFullProgram():
 # This code runs the test cases to check your work
 if __name__ == "__main__":
     print("\n" + "#"*15 + " WEEK 1 TESTS " +  "#" * 16 + "\n")
-    test.testReadFile()
-    test.testDnaToRna()
-    test.testMakeCodonDictionary()
-    # test.week1Tests()
+    test.week1Tests()
     print("\n" + "#"*15 + " WEEK 1 OUTPUT " + "#" * 15 + "\n")
     # runWeek1()
 
