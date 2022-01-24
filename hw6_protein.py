@@ -4,6 +4,7 @@ Name:
 Roll Number:
 """
 
+from fileinput import filename
 from opcode import opname
 
 from numpy import amin
@@ -22,6 +23,7 @@ Returns: str
 def readFile(filename):
     f = open(filename, "r")
     text = f.read().replace("\n","")
+    f.close()
     return text
 
 
@@ -88,7 +90,24 @@ Parameters: str ; str
 Returns: 2D list of strs
 '''
 def synthesizeProteins(dnaFilename, codonFilename):
-    return
+    readDNA= open(dnaFilename,"r")
+    dna=readDNA.read().replace("\n","")
+    codonD=makeCodonDictionary(codonFilename)
+    proteins=[]
+    unused=0
+    index=0
+    while(index<len(dna)):
+        if(dna[index:index+3] == "ATG"):
+            rna=dnaToRna(dna,index)
+            proteins.append(generateProtein(rna,codonD))
+            index += (3*len(rna))
+        else:
+            index += 1
+            unused += 1
+    print("\nTotal no. of Bases:",len(dna))
+    print("Unused-Base: ",unused)
+    print("Total Number Of Protein Synthesized:",len(proteins))
+    return proteins
 
 
 def runWeek1():
