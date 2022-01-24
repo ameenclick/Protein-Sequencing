@@ -154,7 +154,11 @@ Parameters: list of strs
 Returns: dict mapping strs to ints
 '''
 def aminoAcidDictionary(aaList):
-    return
+    aaSet=set(aaList)
+    aaDic={}
+    for each in aaSet:
+        aaDic[each]=aaList.count(each)
+    return aaDic
 
 
 '''
@@ -251,9 +255,7 @@ if __name__ == "__main__":
     ## Uncomment these for Week 2 ##
     
     print("\n" + "#"*15 + " WEEK 2 TESTS " +  "#" * 16 + "\n")
-    test.testCommonProteins()
-    test.testCombineProteins()
-    #test.week2Tests()
+    test.week2Tests()
     """print("\n" + "#"*15 + " WEEK 2 OUTPUT " + "#" * 15 + "\n")
     runWeek2()
     """
