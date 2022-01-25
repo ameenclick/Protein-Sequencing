@@ -4,6 +4,10 @@ Name:
 Roll Number:
 """
 
+from fileinput import filename
+from opcode import opname
+
+from numpy import amin
 import hw6_protein_tests as test
 
 project = "Protein" # don't edit this
@@ -17,7 +21,10 @@ Parameters: str
 Returns: str
 '''
 def readFile(filename):
-    return
+    f = open(filename, "r")
+    text = f.read().replace("\n","")
+    f.close()
+    return text
 
 
 '''
@@ -27,7 +34,16 @@ Parameters: str ; int
 Returns: list of strs
 '''
 def dnaToRna(dna, startIndex):
-    return
+    codon=""
+    condons=[]
+    for each in dna[startIndex:].replace("T","U"):
+        codon += each
+        if(len(codon) == 3):
+            condons.append(codon)
+            if(codon in ["UAA", "UAG", "UGA"]):
+                return condons
+            codon=""
+    return condons
 
 
 '''
@@ -38,7 +54,14 @@ Returns: dict mapping strs to strs
 '''
 def makeCodonDictionary(filename):
     import json
-    return
+    f=open(filename, "r")
+    aminoToCondons=json.load(f)
+    condonsToAmino={}
+    for amino in aminoToCondons:
+        for condons in aminoToCondons[amino]:
+            condons=condons.replace("T","U")
+            condonsToAmino[condons]=amino
+    return condonsToAmino
 
 
 '''
@@ -48,7 +71,16 @@ Parameters: list of strs ; dict mapping strs to strs
 Returns: list of strs
 '''
 def generateProtein(codons, codonD):
-    return
+    proteins=[]
+    for codon in codons:
+            if(proteins == []):
+                proteins.append("Start")
+            else:
+                if(codon in ["UAA", "UAG", "UGA"]):
+                    proteins.append("Stop")
+                    return proteins
+                proteins.append(codonD[codon])
+    return proteins
 
 
 '''
@@ -58,7 +90,24 @@ Parameters: str ; str
 Returns: 2D list of strs
 '''
 def synthesizeProteins(dnaFilename, codonFilename):
-    return
+    readDNA= open(dnaFilename,"r")
+    dna=readDNA.read().replace("\n","")
+    codonD=makeCodonDictionary(codonFilename)
+    proteins=[]
+    unused=0
+    index=0
+    while(index<len(dna)):
+        if(dna[index:index+3] == "ATG"):
+            rna=dnaToRna(dna,index)
+            proteins.append(generateProtein(rna,codonD))
+            index += (3*len(rna))
+        else:
+            index += 1
+            unused += 1
+    print("\nTotal no. of Bases:",len(dna))
+    print("Unused-Base: ",unused)
+    print("Total Number Of Protein Synthesized:",len(proteins))
+    return proteins
 
 
 def runWeek1():
@@ -77,7 +126,11 @@ Parameters: 2D list of strs ; 2D list of strs
 Returns: 2D list of strs
 '''
 def commonProteins(proteinList1, proteinList2):
-    return
+    common=[]
+    for protein in proteinList1:
+        if(protein in proteinList2):
+            common.append(protein)
+    return common
 
 
 '''
@@ -87,7 +140,11 @@ Parameters: 2D list of strs
 Returns: list of strs
 '''
 def combineProteins(proteinList):
-    return
+    aminoacids=[]
+    for protein in proteinList:
+        for amino in protein:
+            aminoacids.append(amino)
+    return aminoacids
 
 
 '''
@@ -97,7 +154,11 @@ Parameters: list of strs
 Returns: dict mapping strs to ints
 '''
 def aminoAcidDictionary(aaList):
-    return
+    aaSet=set(aaList)
+    aaDic={}
+    for each in aaSet:
+        aaDic[each]=aaList.count(each)
+    return aaDic
 
 
 '''
@@ -107,7 +168,26 @@ Parameters: 2D list of strs ; 2D list of strs ; float
 Returns: 2D list of values
 '''
 def findAminoAcidDifferences(proteinList1, proteinList2, cutoff):
-    return
+    aminoacidsP1=combineProteins(proteinList1)
+    aminoacidsP2=combineProteins(proteinList2)
+    aaDic1=aminoAcidDictionary(aminoacidsP1)
+    aaDic2=aminoAcidDictionary(aminoacidsP2)
+    result=[]
+    totalAminoP1=len(aminoacidsP1)
+    totalAminoP2=len(aminoacidsP2)
+    aminoacids=set(aminoacidsP1+aminoacidsP2)
+    for amino in aminoacids:
+        if(amino in aaDic1):
+            freq1=aaDic1[amino]/totalAminoP1
+        else:
+            freq1=0
+        if(amino in aaDic2):
+            freq2=aaDic2[amino]/totalAminoP2
+        else:
+            freq2=0
+        if(abs(freq1-freq2)>cutoff and amino != "Start" and amino != "Stop"):
+            result.append([amino,freq1,freq2])
+    return result
 
 
 '''
@@ -192,12 +272,12 @@ if __name__ == "__main__":
     runWeek1()
 
     ## Uncomment these for Week 2 ##
-    """
+    
     print("\n" + "#"*15 + " WEEK 2 TESTS " +  "#" * 16 + "\n")
     test.week2Tests()
     print("\n" + "#"*15 + " WEEK 2 OUTPUT " + "#" * 15 + "\n")
     runWeek2()
-    """
+
 
     ## Uncomment these for Week 3 ##
     """
