@@ -6,8 +6,9 @@ Roll Number:
 
 from fileinput import filename
 from opcode import opname
+from os import remove
 
-from numpy import amin
+from numpy import amin, math
 import hw6_protein_tests as test
 
 project = "Protein" # don't edit this
@@ -197,7 +198,20 @@ Parameters: 2D list of strs ; 2D list of values
 Returns: None
 '''
 def displayTextResults(commonalities, differences):
-    return
+    print("\nThe following proteins occurred in both DNA Sequences:")
+    allproteins=[]
+    for proteins in commonalities:
+        proteins.remove("Start")
+        proteins.remove("Stop")
+        protein= "-".join(proteins)
+        allproteins.append(protein)
+    allproteins=sorted(set(allproteins))
+    for each in allproteins:
+        print(each)
+    print("\nThe following amino acids occurred at very different rates in the two DNA sequences:")
+    for amino in differences:
+        print(amino[0]+" : "+str(round((amino[1]*100),2))+"% in Seq1, "+str(round((amino[2]*100),2))+"% in Seq2")
+    return None
 
 
 def runWeek2():
