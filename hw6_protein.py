@@ -285,7 +285,14 @@ Parameters: list of strs ; 2D list of values
 Returns: list of strs
 '''
 def makeEdgeList(labels, biggestDiffs):
-    return
+    result=[]
+    biggestDiffs=combineProteins(biggestDiffs)
+    for amino in labels:
+        if amino in biggestDiffs:
+            result.append("black")
+        else:
+            result.append("white")
+    return result
 
 
 '''
